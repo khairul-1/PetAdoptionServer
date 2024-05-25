@@ -105,8 +105,7 @@ router.put('/', verifyTokenAndAdmin, async (req: Request, res: Response) => {
     if (!name && !email && !oldPassword && !newPassword) {
       return res.status(400).json({
         success: false,
-        message:
-          'At least one field (name, email, oldPassword, or newPassword) must be provided',
+        message: 'At least one field required',
       })
     }
 
