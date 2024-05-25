@@ -1,0 +1,34 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const cors_1 = __importDefault(require("cors"));
+const user_routes_1 = require("./app/modules/user.routes");
+const userLogin_1 = require("./app/modules/userLogin");
+const addPets_1 = require("./app/modules/addPets");
+const petFilter_1 = require("./app/modules/petFilter");
+const updatePetProfile_1 = require("./app/modules/updatePetProfile");
+const adoptionRequest_1 = require("./app/modules/adoptionRequest");
+const getAdoptionRequests_1 = require("./app/modules/getAdoptionRequests");
+const updateAdoptionRequestStatus_1 = require("./app/modules/updateAdoptionRequestStatus");
+const getProfile_1 = require("./app/modules/getProfile");
+const updateUserInformation_1 = require("./app/modules/updateUserInformation");
+const app = (0, express_1.default)();
+app.use((0, cors_1.default)());
+app.use(express_1.default.json());
+app.use("/api/register", user_routes_1.userRoutes);
+app.use("/api/login", userLogin_1.userLogin);
+app.use("/api/pets", addPets_1.addPets);
+app.use("/api/pets", petFilter_1.petFilter);
+app.use("/api/pets", updatePetProfile_1.updatePetProfile);
+app.use("/api/adoption-request", adoptionRequest_1.adoptionRequest);
+app.use("/api/adoption-requests", getAdoptionRequests_1.getAdoptionRequests);
+app.use("/api/adoption-requests", updateAdoptionRequestStatus_1.updateAdoptionRequestStatus);
+app.use("/api/profile", getProfile_1.getProfile);
+app.use("/api/profile", updateUserInformation_1.updateUserInformation);
+app.get("/", (req, res) => {
+    res.send("Hello World!");
+});
+exports.default = app;
