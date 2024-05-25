@@ -48,10 +48,6 @@ router.put('/', verifyTokenAndAdmin, async (req: Request, res: Response) => {
     if (type) updateData.type = type
     if (updateData.isActive !== isActive) updateData.isActive = isActive
 
-    console.log(updateData.isActive)
-    console.log(isActive)
-    console.log(updateData)
-
     // Fetch the current user data
     const user = await prisma.user.findUnique({
       where: {
