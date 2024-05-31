@@ -51,5 +51,51 @@ router.put('/:petId', verifyTokenAndAdmin, async (req, res) => {
     })
   }
 })
+//==============================Delete Pet=====================
+
+router.delete('/:petId', verifyTokenAndAdmin, async (req, res) => {
+  const { petId } = req.params
+  //console.log(petId)
+  const updates = req.body // Object containing fields to update
+
+  // Remove the 'user' field if it exists
+  if (updates.user) {
+    delete updates.user
+  }
+
+  try {
+    // Check if the pet exists
+    const existingPet = await prisma.pet.findUnique({
+      where: { id: petId },
+    })
+
+    if (!existingPet) {
+      return res.status(404).json({
+        success: false,
+        statusCode: 404,
+        message: 'Pet not found',
+      })
+    }
+
+    // Update the pet's profile
+    const updatedPet = await prisma.pet.delete({
+      where: { id: petId },
+    })
+
+    res.status(200).json({
+      success: true,
+      statusCode: 200,
+      message: 'Pet profile deleted successfully',
+      data: updatedPet,
+    })
+  } catch (error) {
+    console.error('Error updating pet profile:', error)
+    res.status(500).json({
+      success: false,
+      message: 'Something went wrong',
+      errorDetails: error.message,
+    })
+  }
+})
 
 export const updatePetProfile = router

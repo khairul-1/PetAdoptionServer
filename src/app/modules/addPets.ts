@@ -23,6 +23,7 @@ router.post('/', verifyTokenAndAdmin, async (req, res) => {
       adoptionRequirements,
     } = req.body
 
+    //console.log(req.body)
     // Create pet in the database using Prisma
     const pet = await prisma.pet.create({
       data: {
