@@ -23,12 +23,12 @@ router.put('/', verifyTokenAndAdmin, async (req: Request, res: Response) => {
 
     // Extract the updated user information from the request body
     const { email, type, isActive } = req.body
-
+    //console.log(req.body)
     // Validate the request body
-    if (!type && !isActive) {
+    if (type === '' && isActive === '') {
       return res.status(400).json({
         success: false,
-        message: 'At least one field required (user role or active status)',
+        message: 'Input field required',
       })
     }
 
@@ -48,13 +48,16 @@ router.put('/', verifyTokenAndAdmin, async (req: Request, res: Response) => {
     if (type) updateData.type = type
     if (updateData.isActive !== isActive) updateData.isActive = isActive
 
+    console.log(updateData.isActive)
+    console.log(isActive)
+
     // Fetch the current user data
     const user = await prisma.user.findUnique({
       where: {
         id: userId,
       },
     })
-
+    console.log(user)
     // Verify the admin
     if (user && !('admin' === user.type)) {
       return res.status(400).json({
@@ -63,6 +66,7 @@ router.put('/', verifyTokenAndAdmin, async (req: Request, res: Response) => {
       })
     }
 
+    console.log(updateData)
     // Use Prisma to update the user information in the database
     const updatedUser = await prisma.user.update({
       where: {
@@ -87,6 +91,38 @@ router.put('/', verifyTokenAndAdmin, async (req: Request, res: Response) => {
     })
   } catch (error: any) {
     console.error('Error updating user profile:', error)
+    // Send error response if an error occurs
+    res.status(500).json({
+      success: false,
+      message: 'Something went wrong',
+      errorDetails: error.message,
+    })
+  }
+})
+
+//========================Get data===================
+// Define the route handler for GET /api/profile
+// Define the route handler for GET /api/profile
+router.get('/', verifyTokenAndAdmin, async (req: Request, res: Response) => {
+  try {
+    // Fetch all users from the database
+    const users = await prisma.user.findMany({
+      select: {
+        id: true,
+        email: true,
+        type: true,
+        isActive: true,
+      },
+    })
+    //console.log(users)
+    // Send the users as a response
+    res.status(200).json({
+      success: true,
+      statusCode: 200,
+      data: users,
+    })
+  } catch (error: any) {
+    console.error('Error fetching users:', error)
     // Send error response if an error occurs
     res.status(500).json({
       success: false,
