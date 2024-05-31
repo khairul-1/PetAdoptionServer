@@ -11,6 +11,7 @@ import { updateAdoptionRequestStatus } from './app/modules/updateAdoptionRequest
 import { getProfile } from './app/modules/getProfile'
 import { updateUserInformation } from './app/modules/updateUserInformation'
 import { manageUser } from './app/modules/manageUser'
+import { getAllAdoptionRequest } from './app/modules/getAllAdoptionRequest'
 
 const app = express()
 
@@ -28,6 +29,7 @@ app.use('/api/adoption-requests', updateAdoptionRequestStatus)
 app.use('/api/profile', getProfile)
 app.use('/api/profile', updateUserInformation)
 app.use('/api/user-status', manageUser)
+app.use('/api/all-adoption-requests', getAllAdoptionRequest)
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
