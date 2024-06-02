@@ -12,45 +12,34 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addPets = void 0;
+exports.getAllAdoptionRequest = void 0;
+// Import necessary modules
 const express_1 = __importDefault(require("express"));
 const client_1 = require("@prisma/client");
 const verifyTokenAndAdmin_1 = require("../../shared/verifyTokenAndAdmin");
+// Create a new Prisma client instance
 const prisma = new client_1.PrismaClient();
+// Create an Express router
 const router = express_1.default.Router();
-// Endpoint to add a pet
-router.post('/', verifyTokenAndAdmin_1.verifyTokenAndAdmin, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+// Define the route handler for GET /api/adoption-requests
+router.get('/', verifyTokenAndAdmin_1.verifyTokenAndAdmin, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //console.log(req.body.user.userId);
     try {
-        // Extract pet data from request body
-        const { name, photoUrl, species, breed, age, size, location, description, temperament, medicalHistory, adoptionRequirements, } = req.body;
-        //console.log(req.body)
-        // Create pet in the database using Prisma
-        const pet = yield prisma.pet.create({
-            data: {
-                name,
-                photoUrl,
-                species,
-                breed,
-                age,
-                size,
-                location,
-                description,
-                temperament,
-                medicalHistory,
-                adoptionRequirements,
-            },
-        });
-        // Send success response
-        res.status(201).json({
+        // Extract the user ID from the JWT token in the request headers
+        const userId = req.body.user.userId;
+        // Fetch adoption requests for the user from the database
+        const adoptionRequests = yield prisma.adoptionRequest.findMany();
+        // Send the adoption requests as a response
+        res.status(200).json({
             success: true,
-            statusCode: 201,
-            message: 'Pet added successfully',
-            data: pet,
+            statusCode: 200,
+            message: 'Adoption requests retrieved successfully',
+            data: adoptionRequests,
         });
     }
     catch (error) {
-        // Handle errors
-        console.error('Error adding pet:', error);
+        console.error('Error retrieving adoption requests:', error);
+        // Send error response if an error occurs
         res.status(500).json({
             success: false,
             message: 'Something went wrong',
@@ -58,4 +47,5 @@ router.post('/', verifyTokenAndAdmin_1.verifyTokenAndAdmin, (req, res) => __awai
         });
     }
 }));
-exports.addPets = router;
+// Export the router
+exports.getAllAdoptionRequest = router;

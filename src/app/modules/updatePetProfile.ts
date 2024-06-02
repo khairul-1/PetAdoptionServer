@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import express from 'express'
 import { PrismaClient } from '@prisma/client'
 import { verifyTokenAndAdmin } from '../../shared/verifyTokenAndAdmin' // Adjust the path as needed
@@ -8,7 +9,7 @@ const router = express.Router()
 //=============== Endpoint to update a pet's profile===========================
 router.put('/:petId', verifyTokenAndAdmin, async (req, res) => {
   const { petId } = req.params
-  console.log(petId)
+  //console.log(petId)
 
   const updates = req.body // Object containing fields to update
 
@@ -43,7 +44,7 @@ router.put('/:petId', verifyTokenAndAdmin, async (req, res) => {
       message: 'Pet profile updated successfully',
       data: updatedPet,
     })
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error updating pet profile:', error)
     res.status(500).json({
       success: false,
@@ -89,7 +90,7 @@ router.delete('/:petId', verifyTokenAndAdmin, async (req, res) => {
       message: 'Pet profile deleted successfully',
       data: updatedPet,
     })
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error updating pet profile:', error)
     res.status(500).json({
       success: false,

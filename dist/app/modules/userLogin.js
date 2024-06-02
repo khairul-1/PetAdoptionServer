@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userLogin = void 0;
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const express_1 = __importDefault(require("express"));
 const client_1 = require("@prisma/client");
 const bcrypt_1 = __importDefault(require("bcrypt"));
@@ -21,8 +22,9 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const prisma = new client_1.PrismaClient();
 const router = express_1.default.Router();
+// eslint-disable-next-line no-undef
 const jwt_key = process.env.JWT_KEY;
-router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     try {
         // Find user by email
@@ -33,17 +35,17 @@ router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (!user || !(yield bcrypt_1.default.compare(password, user.password))) {
             return res.status(401).json({
                 success: false,
-                message: "Unauthorized Access",
+                message: 'Unauthorized Access',
             });
         }
         // Generate JWT token
         const token = jsonwebtoken_1.default.sign({ userId: user.id, type: user.type }, `${jwt_key}`, {
-            expiresIn: "1h", // Token expires in 1 hour
+            expiresIn: '1h', // Token expires in 1 hour
         });
         res.status(200).json({
             success: true,
             statusCode: 200,
-            message: "User logged in successfully",
+            message: 'User logged in successfully',
             data: {
                 id: user.id,
                 name: user.name,
@@ -53,15 +55,15 @@ router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
     }
     catch (error) {
-        console.error("Login error:", error);
-        let errorMessage = "Something went wrong";
+        console.error('Login error:', error);
+        let errorMessage = 'Something went wrong';
         let statusCode = 500;
         if (error instanceof jsonwebtoken_1.default.JsonWebTokenError) {
-            errorMessage = "Invalid JWT token";
+            errorMessage = 'Invalid JWT token';
             statusCode = 401;
         }
         else if (error instanceof jsonwebtoken_1.default.TokenExpiredError) {
-            errorMessage = "JWT token expired";
+            errorMessage = 'JWT token expired';
             statusCode = 401;
         }
         res.status(statusCode).json({
